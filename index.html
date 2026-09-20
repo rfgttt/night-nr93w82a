@@ -1,295 +1,459 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>夜光剧场 · 示例演示站</title>
+<title>Nightlight — Short Dramas, Delivered Daily</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0b0e17; --card:#141a2a; --card2:#1b2338; --line:#252f4a;
-    --gold:#ffd76a; --txt:#e8ecf7; --sub:#8b96b5; --accent:#6c5ce7; --hot:#ff5c7a;
+    --black:#050505; --surface:#131315; --surface2:#1b1b1e; --line:#2a2a2e;
+    --ivory:#f5f4f1; --slate:#8a8f98; --slate2:#5c6169;
+    --amber:#ffb454; --amber-deep:#e79530; --rose:#ff5c7a;
+    --r-btn:10px; --r-card:18px; --r-big:28px;
+    --lift: rgba(255,255,255,0.02) 0px 0px 0px 1px, rgba(0,0,0,0.34) 0px 4px 12px, rgba(0,0,0,0.5) 0px 10px 30px;
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--txt);font-family:"Microsoft YaHei","PingFang SC",sans-serif;line-height:1.6}
+  html{scroll-behavior:smooth}
+  body{background:var(--black);color:var(--ivory);font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5;letter-spacing:-0.16px}
   a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  ::selection{background:var(--amber);color:var(--black)}
+  :focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
 
-  .demo-bar{background:linear-gradient(90deg,#3d2b00,#5c4300);color:var(--gold);text-align:center;font-size:13px;padding:6px 12px;letter-spacing:1px}
+  .eyebrow{font-size:11px;font-weight:450;text-transform:uppercase;letter-spacing:1.6px;color:var(--slate)}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 22px}
 
-  header{position:sticky;top:0;z-index:50;background:rgba(11,14,23,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-  .nav{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 20px}
-  .logo{font-size:22px;font-weight:700}
-  .logo em{color:var(--gold);font-style:normal}
-  .nav ul{display:flex;gap:26px;list-style:none;font-size:15px}
-  .nav ul a:hover{color:var(--gold)}
-  .btn{display:inline-block;border:none;border-radius:22px;padding:9px 22px;font-size:14px;cursor:pointer;transition:.2s}
-  .btn-gold{background:linear-gradient(135deg,#ffd76a,#ffab3d);color:#2b1c00;font-weight:700}
-  .btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(255,180,60,.25)}
-  .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--txt)}
-  .btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+  .demo-strip{background:var(--surface2);border-bottom:1px solid var(--line);color:var(--slate);text-align:center;font-size:12px;padding:7px 14px;letter-spacing:0.4px}
+  .demo-strip b{color:var(--amber);font-weight:600}
 
-  .hero{max-width:1180px;margin:0 auto;padding:56px 20px 30px;display:grid;grid-template-columns:1.3fr .7fr;gap:40px;align-items:center}
-  .hero h1{font-size:40px;line-height:1.25}
-  .hero h1 span{color:var(--hot)}
-  .hero p{color:var(--sub);margin:16px 0 28px;font-size:16px}
-  .hero-stats{display:flex;gap:36px;margin-top:30px}
-  .hero-stats b{font-size:24px;color:var(--gold);display:block}
-  .hero-stats i{font-style:normal;color:var(--sub);font-size:13px}
-  .phone{width:270px;height:478px;margin:0 auto;border-radius:34px;background:#000;border:8px solid #222;overflow:hidden;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.55)}
-  .phone video{width:100%;height:100%;object-fit:cover}
-  .phone .tag{position:absolute;top:14px;left:14px;background:rgba(0,0,0,.55);color:#fff;font-size:12px;padding:3px 10px;border-radius:12px}
+  header{position:sticky;top:0;z-index:60;background:rgba(5,5,5,.82);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.05)}
+  .nav{display:flex;align-items:center;gap:30px;padding:16px 22px;max-width:1160px;margin:0 auto}
+  .logo{font-size:19px;font-weight:700;letter-spacing:-0.4px}
+  .logo i{font-style:normal;color:var(--amber)}
+  .logo::before{content:"◐ ";color:var(--amber);font-weight:400}
+  .nav nav{display:flex;gap:26px;font-size:14px;color:var(--slate)}
+  .nav nav a:hover{color:var(--ivory)}
+  .nav .right{margin-left:auto;display:flex;align-items:center;gap:14px}
+  .signin{font-size:14px;color:var(--slate)}
+  .signin:hover{color:var(--ivory)}
+  .btn{border:none;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;border-radius:var(--r-btn);padding:10px 20px;transition:transform .15s ease, box-shadow .2s ease, background .2s}
+  .btn:active{transform:scale(.97)}
+  .btn-amber{background:var(--amber);color:var(--black)}
+  .btn-amber:hover{background:var(--amber-deep);box-shadow:0 6px 22px rgba(255,180,84,.22)}
+  .btn-line{background:transparent;border:1px solid var(--line);color:var(--ivory)}
+  .btn-line:hover{border-color:var(--slate)}
 
-  section{max-width:1180px;margin:0 auto;padding:44px 20px}
-  .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px}
-  .sec-head h2{font-size:26px}
-  .sec-head h2::before{content:"";display:inline-block;width:6px;height:22px;background:var(--gold);border-radius:3px;margin-right:10px;vertical-align:-2px}
-  .sec-head .more{color:var(--sub);font-size:14px}
-  .sec-head .more:hover{color:var(--gold)}
+  /* HERO */
+  .hero{padding:74px 0 66px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;inset:auto -20% -60% auto;width:720px;height:720px;background:radial-gradient(circle, rgba(255,180,84,.07), transparent 65%);pointer-events:none}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
+  .hero h1{font-size:clamp(34px,4.6vw,54px);font-weight:600;line-height:1.04;letter-spacing:-1.6px;margin:18px 0 20px}
+  .hero h1 em{font-style:normal;color:var(--amber)}
+  .hero .lede{color:var(--slate);font-size:17px;max-width:46ch}
+  .hero .cta-row{display:flex;gap:14px;margin-top:32px;align-items:center;flex-wrap:wrap}
+  .hero .cta-row .btn{padding:14px 30px;font-size:15px}
+  .notenc{font-size:12.5px;color:var(--slate2)}
+  .trustline{display:flex;gap:22px;margin-top:34px;flex-wrap:wrap}
+  .trustline span{font-size:12.5px;color:var(--slate)}
+  .trustline b{color:var(--ivory);font-weight:600}
 
-  .grid-dramas{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:18px}
-  .drama{background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--line);cursor:pointer;transition:.2s;position:relative}
-  .drama:hover{transform:translateY(-4px);border-color:var(--gold)}
-  .drama img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
-  .drama .info{padding:10px 12px 12px}
-  .drama .name{font-size:15px;font-weight:700}
-  .drama .meta{font-size:12px;color:var(--sub);margin-top:3px}
-  .drama .badge{position:absolute;top:8px;right:8px;background:var(--hot);color:#fff;font-size:11px;padding:2px 8px;border-radius:10px}
-  .drama .badge.new{background:var(--accent)}
-  .heat{color:var(--gold);font-size:12px;margin-top:4px}
+  .phone{width:294px;height:522px;margin:0 auto;border-radius:44px;background:#000;border:7px solid #1d1d1f;position:relative;box-shadow:var(--lift)}
+  .phone video{width:100%;height:100%;object-fit:cover;border-radius:36px}
+  .phone .live{position:absolute;top:18px;left:18px;background:rgba(5,5,5,.65);backdrop-filter:blur(6px);font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:5px 11px;border-radius:20px;color:var(--ivory)}
+  .phone .live::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--rose);margin-right:6px;vertical-align:1px;animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
-  .two-col{display:grid;grid-template-columns:340px 1fr;gap:26px;align-items:start}
-  .player-wrap{background:#000;border-radius:16px;overflow:hidden;border:1px solid var(--line);position:relative}
-  .player-wrap video{width:100%;aspect-ratio:9/16;max-height:560px;display:block;object-fit:cover}
-  .eps{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
-  .eps h3{font-size:17px;margin-bottom:12px}
-  .eps h3 small{color:var(--sub);font-weight:400;font-size:12px;margin-left:8px}
-  .ep-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:10px;max-height:300px;overflow-y:auto;padding-right:4px}
-  .ep{position:relative;background:var(--card2);border:1px solid var(--line);border-radius:10px;text-align:center;padding:9px 0;font-size:14px;cursor:pointer;transition:.15s}
-  .ep:hover{border-color:var(--gold)}
-  .ep.now{background:var(--gold);color:#2b1c00;font-weight:700;border-color:var(--gold)}
-  .ep .lock{position:absolute;top:-6px;right:-6px;font-size:13px;background:#000;border-radius:50%;width:20px;height:20px;line-height:20px}
-  .vip-strip{margin-top:14px;background:linear-gradient(135deg,#3d2b00,#1b2338);border:1px solid #6a5320;border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;font-size:13px}
-  .vip-strip b{color:var(--gold)}
+  section{padding:60px 0}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:26px;gap:20px}
+  .sec-head h2{font-size:26px;font-weight:600;letter-spacing:-0.8px}
+  .sec-head .eyebrow{margin-bottom:8px}
+  .link-more{font-size:13.5px;color:var(--slate)}
+  .link-more:hover{color:var(--amber)}
 
-  .grid-video{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
-  .vcard{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-  .vcard video{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#000}
-  .vcard .info{padding:12px 14px}
-  .vcard .t{font-size:15px;font-weight:700}
-  .vcard .d{font-size:12px;color:var(--sub);margin-top:4px}
-  .vcard .play-tip{font-size:12px;color:var(--gold);margin-top:8px}
+  /* trending rail */
+  .rail{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+  .tcard{background:var(--surface);border-radius:var(--r-card);overflow:hidden;cursor:pointer;transition:transform .18s ease;border:1px solid rgba(255,255,255,.04)}
+  .tcard:hover{transform:translateY(-5px)}
+  .tcard .shot{position:relative}
+  .tcard img{width:100%;aspect-ratio:3/4;object-fit:cover}
+  .tcard .tag{position:absolute;top:10px;left:10px;font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:rgba(5,5,5,.6);backdrop-filter:blur(4px)}
+  .tcard .tag.hot{background:var(--rose);color:#fff}
+  .tcard .tag.new{background:var(--amber);color:var(--black)}
+  .tcard .meta{padding:12px 14px 14px}
+  .tcard .t{font-size:14.5px;font-weight:600;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tcard .d{font-size:12px;color:var(--slate);margin-top:3px}
 
-  .grid-shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
-  .prod{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:.2s}
-  .prod:hover{transform:translateY(-4px);border-color:var(--hot)}
-  .prod img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
-  .prod .info{padding:12px 14px 14px}
-  .prod .pt{font-size:15px;font-weight:700}
-  .prod .from{font-size:12px;color:var(--hot);margin:3px 0 6px}
-  .prod .price{font-size:20px;font-weight:800;color:var(--gold)}
-  .prod .price s{font-size:13px;color:var(--sub);font-weight:400;margin-left:8px}
-  .prod .row{display:flex;gap:10px;margin-top:12px}
-  .prod .row .btn{flex:1;text-align:center;padding:8px 0;border-radius:10px;font-size:14px}
-  .btn-cart{background:var(--card2);border:1px solid var(--line);color:var(--txt)}
-  .btn-buy{background:linear-gradient(135deg,#ff5c7a,#ff8a5c);color:#fff;font-weight:700;border:none}
+  /* player + shop-the-look */
+  .watch{display:grid;grid-template-columns:400px 1fr;gap:34px;align-items:start}
+  .stage{position:relative;border-radius:var(--r-card);overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.06)}
+  .stage video{width:100%;aspect-ratio:9/13;max-height:600px;object-fit:cover;display:block}
+  .look-dot{position:absolute;left:22%;top:58%;width:30px;height:30px;border-radius:50%;background:var(--amber);color:var(--black);border:3px solid rgba(255,255,255,.9);font-weight:700;font-size:15px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 0 0 8px rgba(255,180,84,.25);animation:pulse 1.6s infinite}
+  .look-dot.on{display:flex}
+  .look-bubble{position:absolute;left:calc(22% + 42px);top:calc(58% - 34px);width:250px;background:rgba(19,19,21,.94);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;padding:13px 14px;display:none;z-index:5}
+  .look-bubble.show{display:block}
+  .look-bubble img{width:52px;height:66px;object-fit:cover;border-radius:8px;float:left;margin-right:12px}
+  .look-bubble .lt{font-size:13.5px;font-weight:600}
+  .look-bubble .lp{font-size:13px;color:var(--amber);font-weight:600;margin-top:4px}
+  .look-bubble .ls{font-size:11.5px;color:var(--slate);margin-top:2px;clear:both;padding-top:8px}
+  .look-bubble button{margin-top:2px;width:100%;padding:8px;border-radius:9px;border:none;background:var(--amber);color:var(--black);font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit}
+  .stage-cap{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12.5px;color:var(--slate)}
 
-  footer{border-top:1px solid var(--line);margin-top:50px;padding:30px 20px 40px;text-align:center;color:var(--sub);font-size:13px}
-  footer .warn{color:#c9a227;margin-bottom:8px}
+  .episodes h3{font-size:21px;font-weight:600;letter-spacing:-0.5px}
+  .episodes .sub{font-size:13px;color:var(--slate);margin:5px 0 18px}
+  .chipgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:9px}
+  .chip{background:var(--surface);border:1px solid rgba(255,255,255,.05);border-radius:10px;text-align:center;padding:10px 0;font-size:13.5px;font-weight:500;cursor:pointer;transition:.15s;color:var(--ivory);position:relative;font-family:inherit}
+  .chip:hover{border-color:var(--slate2)}
+  .chip.now{background:var(--amber);color:var(--black);font-weight:700;border-color:var(--amber)}
+  .chip.locked{color:var(--slate2)}
+  .chip.locked::after{content:"";position:absolute;top:6px;right:7px;width:5px;height:5px;border-radius:50%;background:var(--amber)}
+  .joinbar{margin-top:18px;display:flex;align-items:center;justify-content:space-between;gap:14px;background:linear-gradient(120deg,var(--surface),#231a0c);border:1px solid #3a3020;border-radius:14px;padding:14px 18px}
+  .joinbar p{font-size:13px;color:var(--slate)}
+  .joinbar b{color:var(--amber)}
 
-  /* modal */
-  .mask{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:99}
-  .mask.show{display:flex}
-  .modal{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px 34px;width:min(420px,92vw);text-align:center}
-  .modal h3{font-size:20px;margin-bottom:8px}
-  .modal p{color:var(--sub);font-size:14px;margin-bottom:20px}
-  .modal .plans{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:22px}
-  .plan{border:1px solid var(--line);border-radius:12px;padding:12px 6px;cursor:pointer;font-size:13px}
-  .plan b{display:block;font-size:17px;color:var(--gold);margin-top:4px}
-  .plan.sel{border-color:var(--gold);background:rgba(255,215,106,.08)}
-  .modal .btn{width:100%;padding:12px;font-size:16px}
-  .modal .close{margin-top:12px;color:var(--sub);font-size:13px;cursor:pointer}
+  /* shop */
+  .cyctoggle{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:3px;font-size:12.5px;font-weight:600}
+  .cyctoggle button{border:none;background:transparent;color:var(--slate);border-radius:17px;padding:5px 14px;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:600}
+  .cyctoggle button.sel{background:var(--amber);color:var(--black)}
+  .shopgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .pcard{background:var(--surface);border-radius:var(--r-card);overflow:hidden;border:1px solid rgba(255,255,255,.05);transition:transform .18s ease}
+  .pcard:hover{transform:translateY(-5px)}
+  .pcard .shot{position:relative}
+  .pcard img.main{width:100%;aspect-ratio:4/5;object-fit:cover}
+  .heart{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(5,5,5,.55);backdrop-filter:blur(6px);border:none;color:var(--ivory);font-size:15px;cursor:pointer;transition:.15s}
+  .heart:hover{transform:scale(1.1)}
+  .heart.on{color:var(--rose)}
+  .seen{position:absolute;bottom:12px;left:12px;font-size:10.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;background:rgba(5,5,5,.62);backdrop-filter:blur(4px);padding:4px 10px;border-radius:20px;color:var(--amber)}
+  .pcard .body{padding:16px 18px 18px}
+  .pcard .pt{font-size:15.5px;font-weight:600;letter-spacing:-0.25px}
+  .pcard .pd{font-size:12.5px;color:var(--slate);margin-top:4px}
+  .pcard .pr{margin-top:10px;font-size:19px;font-weight:700;letter-spacing:-0.5px}
+  .pcard .pr s{font-size:13px;color:var(--slate2);font-weight:400;margin-left:8px}
+  .pcard .actions{display:flex;gap:10px;margin-top:14px}
+  .pcard .actions .btn{flex:1;padding:10px 0;font-size:13px;text-align:center}
 
-  @media (max-width:900px){
-    .hero{grid-template-columns:1fr;text-align:center}
-    .hero-stats{justify-content:center}
-    .two-col{grid-template-columns:1fr}
-    .nav ul{display:none}
+  /* membership */
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
+  .plan{background:var(--surface);border:1px solid rgba(255,255,255,.06);border-radius:var(--r-big);padding:30px 28px;display:flex;flex-direction:column;position:relative}
+  .plan.feat{background:linear-gradient(160deg,#241a08,var(--surface) 55%);border-color:#4a3a16;box-shadow:var(--lift)}
+  .plan .ribbon{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--amber);color:var(--black);font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:4px 14px;border-radius:20px;white-space:nowrap}
+  .plan .pname{font-size:13px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--slate)}
+  .plan .price{font-size:38px;font-weight:700;letter-spacing:-1.4px;margin:14px 0 2px}
+  .plan .price small{font-size:14px;color:var(--slate);font-weight:400;letter-spacing:0}
+  .plan .note{font-size:12.5px;color:var(--slate);min-height:20px}
+  .plan ul{list-style:none;margin:22px 0 26px;display:grid;gap:11px}
+  .plan li{font-size:13.5px;color:#c9cdd4;display:flex;gap:10px;align-items:baseline}
+  .plan li::before{content:"✓";color:var(--amber);font-weight:700;font-size:12px}
+  .plan .btn{margin-top:auto;width:100%;padding:13px;font-size:14.5px}
+  .plans-foot{text-align:center;font-size:12.5px;color:var(--slate2);margin-top:22px}
+
+  /* voices */
+  .voices{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .vc{background:var(--surface);border:1px solid rgba(255,255,255,.05);border-radius:var(--r-card);padding:24px}
+  .vc .stars{color:var(--amber);letter-spacing:3px;font-size:13px}
+  .vc p{font-size:14px;color:#d4d7dd;margin-top:12px;line-height:1.55}
+  .vc .who{margin-top:16px;font-size:12px;color:var(--slate2)}
+  .vc .who b{color:var(--slate);font-weight:600}
+
+  footer{border-top:1px solid var(--line);margin-top:40px;padding:44px 0 54px;font-size:13px;color:var(--slate2)}
+  footer .cols{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:30px;margin-bottom:36px}
+  footer h5{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--slate);margin-bottom:14px;font-weight:600}
+  footer ul{list-style:none;display:grid;gap:9px}
+  footer a:hover{color:var(--ivory)}
+  .f-disclaimer{border:1px dashed #4a3a16;color:#c9a86a;border-radius:12px;padding:14px 18px;font-size:12.5px;line-height:1.6}
+
+  .toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,80px);background:var(--surface2);border:1px solid var(--line);color:var(--ivory);font-size:13.5px;padding:12px 22px;border-radius:30px;transition:transform .3s ease;z-index:99;box-shadow:var(--lift);max-width:88vw;text-align:center}
+  .toast.show{transform:translate(-50%,0)}
+
+  @media (max-width:960px){
+    .hero-grid{grid-template-columns:1fr;text-align:left}
+    .phone{margin-top:38px}
+    .rail{grid-template-columns:repeat(3,1fr)}
+    .watch{grid-template-columns:1fr}
+    .stage video{max-height:520px}
+    .shopgrid,.plans,.voices{grid-template-columns:1fr}
+    .plans{gap:26px}
+    footer .cols{grid-template-columns:1fr 1fr}
+    .nav nav{display:none}
+  }
+  @media (max-width:560px){
+    .rail{grid-template-columns:repeat(2,1fr)}
+    .hero h1{font-size:34px}
   }
 </style>
 </head>
 <body>
 
-<div class="demo-bar">⚠ 本页为功能演示站 · 全部剧集/商品/视频均为占位示例，上线前替换为真实内容</div>
+<div class="demo-strip"><b>DEMO SITE</b> · every clip, poster, product and review below is placeholder content for layout preview</div>
 
 <header>
   <div class="nav">
-    <div class="logo">夜光<em>剧场</em></div>
-    <ul>
-      <li><a href="#dramas">正在连载</a></li>
-      <li><a href="#vip">会员中心</a></li>
-      <li><a href="#videos">好物视频</a></li>
-      <li><a href="#shop">剧场商城</a></li>
-    </ul>
-    <button class="btn btn-gold" onclick="openVip()">开通VIP · 首月¥9.9</button>
+    <a class="logo" href="#">Nightlight<i>.</i></a>
+    <nav>
+      <a href="#trending">Browse</a>
+      <a href="#watch">Now Playing</a>
+      <a href="#shop">Shop</a>
+      <a href="#membership">Membership</a>
+    </nav>
+    <div class="right">
+      <a class="signin" href="#" onclick="toast('Sign-in is not wired up in this demo');return false;">Sign in</a>
+      <button class="btn btn-amber" onclick="document.getElementById('watch').scrollIntoView()">Watch free</button>
+    </div>
   </div>
 </header>
 
-<div class="hero">
-  <div>
-    <h1>热门短剧 <span>每日更新</span><br>看完剧情，顺手带走女主同款</h1>
-    <p>竖屏免费追剧 + 剧集同款好物商城，一个网站闭环。前 10 集免费，会员解锁全集。</p>
-    <button class="btn btn-gold" style="font-size:16px;padding:12px 34px" onclick="document.getElementById('dramas').scrollIntoView({behavior:'smooth'})">立即追剧 →</button>
-    <div class="hero-stats">
-      <div><b>200+</b><i>部热播短剧</i></div>
-      <div><b>30万+</b><i>示例追剧人数</i></div>
-      <div><b>每日</b><i>早8点更新</i></div>
-    </div>
-  </div>
-  <div class="phone">
-    <span class="tag">▶ 热播中</span>
-    <video src="assets/drama_ep01.mp4" autoplay muted loop playsinline></video>
-  </div>
-</div>
-
-<section id="dramas">
-  <div class="sec-head"><h2>正在连载</h2><a class="more" href="javascript:;">查看全部 →</a></div>
-  <div class="grid-dramas">
-    <div class="drama" onclick="jumpPlayer()"><span class="badge">爆</span><img src="assets/poster_1.jpg" alt=""><div class="info"><div class="name">契约新娘</div><div class="meta">都市 · 虐恋 · 68集</div><div class="heat">🔥 热度 98.2万</div></div></div>
-    <div class="drama" onclick="jumpPlayer()"><span class="badge new">新</span><img src="assets/poster_2.jpg" alt=""><div class="info"><div class="name">逆袭千金</div><div class="meta">爽剧 · 复仇 · 80集</div><div class="heat">🔥 热度 87.5万</div></div></div>
-    <div class="drama" onclick="jumpPlayer()"><span class="badge">爆</span><img src="assets/poster_3.jpg" alt=""><div class="info"><div class="name">总裁的替嫁</div><div class="meta">豪门 · 甜宠 · 72集</div><div class="heat">🔥 热度 76.1万</div></div></div>
-    <div class="drama" onclick="jumpPlayer()"><img src="assets/poster_4.jpg" alt=""><div class="info"><div class="name">暗夜玫瑰</div><div class="meta">悬疑 · 卧底 · 56集</div><div class="heat">🔥 热度 62.3万</div></div></div>
-    <div class="drama" onclick="jumpPlayer()"><span class="badge new">新</span><img src="assets/poster_5.jpg" alt=""><div class="info"><div class="name">重逢在雨季</div><div class="meta">青春 · 暗恋 · 48集</div><div class="heat">🔥 热度 55.8万</div></div></div>
-    <div class="drama" onclick="jumpPlayer()"><img src="assets/poster_6.jpg" alt=""><div class="info"><div class="name">烽火戏诸侯</div><div class="meta">古装 · 权谋 · 90集</div><div class="heat">🔥 热度 49.0万</div></div></div>
-  </div>
-</section>
-
-<section id="vip">
-  <div class="sec-head"><h2>追剧放映厅</h2><a class="more" href="javascript:;" onclick="openVip()">解锁全集 →</a></div>
-  <div class="two-col">
-    <div class="player-wrap">
-      <video id="mainPlayer" src="assets/drama_ep01.mp4" controls autoplay muted loop playsinline></video>
-    </div>
-    <div class="eps">
-      <h3>《长夜将尽》<small>示例剧集 · 共 24 集 · 每日更新</small></h3>
-      <div class="ep-list" id="epList"></div>
-      <div class="vip-strip">
-        <span>🔒 第 11 集起为会员专享 · <b>示例付费墙</b></span>
-        <button class="btn btn-gold" style="padding:7px 18px" onclick="openVip()">开通会员</button>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Vertical short drama · New episodes daily</div>
+      <h1>Bite-sized dramas you finish <em>on the commute</em>.</h1>
+      <p class="lede">60-second episodes, cliffhangers that respect your time — and when you fall for what she's wearing, it's one tap from your door.</p>
+      <div class="cta-row">
+        <button class="btn btn-amber" onclick="document.getElementById('trending').scrollIntoView()">Start watching — first 10 free</button>
+        <span class="notenc">No credit card to browse</span>
+      </div>
+      <div class="trustline">
+        <span><b>1–2 min</b> per episode</span>
+        <span><b>200+</b> series in catalog (demo)</span>
+        <span><b>Cancel anytime</b>, no lock-in</span>
       </div>
     </div>
+    <div class="phone">
+      <span class="live">Trending #1</span>
+      <video src="assets/drama_en.mp4" autoplay muted loop playsinline></video>
+    </div>
   </div>
 </section>
 
-<section id="videos">
-  <div class="sec-head"><h2>好物展示视频</h2><a class="more" href="javascript:;">更多 →</a></div>
-  <div class="grid-video">
-    <div class="vcard">
-      <video src="assets/product_demo.mp4" controls muted loop playsinline preload="metadata"></video>
-      <div class="info"><div class="t">《长夜将尽》女主同款身体乳</div><div class="d">剧情第 6 集出镜 · 30s 使用演示</div><div class="play-tip">▶ 边看边种草 · 点击视频播放</div></div>
+<section id="trending">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow">This week</div><h2>Trending now</h2></div>
+      <a class="link-more" href="#" onclick="toast('Full catalog is a demo placeholder');return false;">View all →</a>
     </div>
-    <div class="vcard">
-      <video src="assets/product_demo.mp4" controls muted loop playsinline preload="metadata"></video>
-      <div class="info"><div class="t">同款真丝眼罩开箱</div><div class="d">剧情第 12 集出镜 · 材质特写</div><div class="play-tip">▶ 示例视频 · 上线替换实拍</div></div>
+    <div class="rail">
+      <div class="tcard" onclick="goWatch()"><div class="shot"><span class="tag hot">Hot</span><img src="assets/poster_en_1.jpg" alt="The Night Bride poster (demo)"></div><div class="meta"><div class="t">The Night Bride</div><div class="d">Romance · 68 eps</div></div></div>
+      <div class="tcard" onclick="goWatch()"><div class="shot"><span class="tag new">New</span><img src="assets/poster_en_2.jpg" alt="Heiress Returns poster (demo)"></div><div class="meta"><div class="t">Heiress Returns</div><div class="d">Revenge · 80 eps</div></div></div>
+      <div class="tcard" onclick="goWatch()"><div class="shot"><span class="tag hot">Hot</span><img src="assets/poster_en_3.jpg" alt="Marrying the CEO poster (demo)"></div><div class="meta"><div class="t">Marrying the CEO</div><div class="d">Billionaire · 72 eps</div></div></div>
+      <div class="tcard" onclick="goWatch()"><div class="shot"><span class="tag">Thriller</span><img src="assets/poster_en_4.jpg" alt="Dark Rose poster (demo)"></div><div class="meta"><div class="t">Dark Rose</div><div class="d">Suspense · 56 eps</div></div></div>
+      <div class="tcard" onclick="goWatch()"><div class="shot"><span class="tag new">New</span><img src="assets/poster_en_5.jpg" alt="Rainy Reunion poster (demo)"></div><div class="meta"><div class="t">Rainy Reunion</div><div class="d">First love · 48 eps</div></div></div>
+      <div class="tcard" onclick="goWatch()"><div class="shot"><span class="tag">Period</span><img src="assets/poster_en_6.jpg" alt="Crown of Ashes poster (demo)"></div><div class="meta"><div class="t">Crown of Ashes</div><div class="d">Court drama · 90 eps</div></div></div>
     </div>
-    <div class="vcard">
-      <video src="assets/product_demo.mp4" controls muted loop playsinline preload="metadata"></video>
-      <div class="info"><div class="t">香水礼盒 · 剧情名场面联动</div><div class="d">表白名场面同款 · 礼盒展示</div><div class="play-tip">▶ 示例视频 · 上线替换实拍</div></div>
+  </div>
+</section>
+
+<section id="watch">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow">Now playing · Demo series</div><h2>Long Night Falls</h2></div>
+    </div>
+    <div class="watch">
+      <div>
+        <div class="stage">
+          <video id="player" src="assets/drama_en.mp4" controls autoplay muted loop playsinline></video>
+          <button class="look-dot" id="lookDot" aria-label="Shop this look">🛍</button>
+          <div class="look-bubble" id="lookBubble">
+            <img src="assets/shop_en_1.jpg" alt="Camellia body cream (demo)">
+            <div class="lt">Camellia Body Cream</div>
+            <div class="lp" data-usd="$19.00" data-zar="R 351">–</div>
+            <div class="ls">Featured in EP.01 · 00:04</div>
+            <button onclick="toast('Checkout is a demo placeholder');hideLook()">Add to bag</button>
+          </div>
+        </div>
+        <div class="stage-cap"><span>Tap the <b style="color:var(--amber)">🛍 dot</b> mid-scene — what she uses, you can buy</span><span>1080p · demo</span></div>
+      </div>
+      <div class="episodes">
+        <h3>Season 1 · 24 episodes</h3>
+        <p class="sub">Episodes 1–10 free for everyone. Gold members stream the full season the day it drops.</p>
+        <div class="chipgrid" id="chips"></div>
+        <div class="joinbar">
+          <p>🔒 <b>Ep. 11–24</b> are part of the full-season paywall (demo)</p>
+          <button class="btn btn-amber" style="padding:9px 18px;font-size:13px" onclick="document.getElementById('membership').scrollIntoView()">Go Gold</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <section id="shop">
-  <div class="sec-head"><h2>剧场商城 · 剧集同款</h2><a class="more" href="javascript:;">全部商品 →</a></div>
-  <div class="grid-shop">
-    <div class="prod">
-      <img src="assets/prod_1.jpg" alt="">
-      <div class="info">
-        <div class="pt">山茶花精华身体乳 250ml</div>
-        <div class="from">📺《长夜将尽》第6集 女主同款</div>
-        <div class="price">¥69 <s>¥99</s></div>
-        <div class="row">
-          <button class="btn btn-cart" onclick="demoTip('已加入购物车（示例）')">加购物车</button>
-          <button class="btn btn-buy" onclick="demoTip('示例站未接支付 · 真实站此处挂收银台')">立即购买</button>
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow">Shop the look</div><h2>From screen to doorstep</h2></div>
+      <div class="cyctoggle" role="group" aria-label="Currency">
+        <button id="usdBtn" class="sel" onclick="setCur('usd')">USD $</button>
+        <button id="zarBtn" onclick="setCur('zar')">ZAR R</button>
+      </div>
+    </div>
+    <div class="shopgrid">
+      <div class="pcard">
+        <div class="shot"><span class="seen">As seen · EP.06</span><img class="main" src="assets/shop_en_1.jpg" alt="Camellia body cream (demo product)"><button class="heart" onclick="wish(this)" aria-label="Save to wishlist">♡</button></div>
+        <div class="body">
+          <div class="pt">Camellia Body Cream</div>
+          <div class="pd">250 ml · the night-routine jar from Ep. 6</div>
+          <div class="pr"><span data-usd="$19.00" data-zar="R 351">–</span> <s><span data-usd="$29.00" data-zar="R 537">–</span></s></div>
+          <div class="actions">
+            <button class="btn btn-line" onclick="toast('Wishlist demo — item saved locally')">Save</button>
+            <button class="btn btn-amber" onclick="toast('Checkout is a demo placeholder')">Add to bag</button>
+          </div>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="shot"><span class="seen">As seen · EP.12</span><img class="main" src="assets/shop_en_2.jpg" alt="Silk eye mask (demo product)"><button class="heart" onclick="wish(this)" aria-label="Save to wishlist">♡</button></div>
+        <div class="body">
+          <div class="pt">Mulberry Silk Eye Mask</div>
+          <div class="pd">The 10-minute reset she keeps on the nightstand</div>
+          <div class="pr"><span data-usd="$12.00" data-zar="R 222">–</span> <s><span data-usd="$18.00" data-zar="R 333">–</span></s></div>
+          <div class="actions">
+            <button class="btn btn-line" onclick="toast('Wishlist demo — item saved locally')">Save</button>
+            <button class="btn btn-amber" onclick="toast('Checkout is a demo placeholder')">Add to bag</button>
+          </div>
+        </div>
+      </div>
+      <div class="pcard">
+        <div class="shot"><span class="seen">As seen · EP.19</span><img class="main" src="assets/shop_en_3.jpg" alt="Perfume gift set (demo product)"><button class="heart" onclick="wish(this)" aria-label="Save to wishlist">♡</button></div>
+        <div class="body">
+          <div class="pt">White Tea Perfume Duo</div>
+          <div class="pd">The confession-scene gift, boxed for gifting</div>
+          <div class="pr"><span data-usd="$34.00" data-zar="R 629">–</span> <s><span data-usd="$49.00" data-zar="R 907">–</span></s></div>
+          <div class="actions">
+            <button class="btn btn-line" onclick="toast('Wishlist demo — item saved locally')">Save</button>
+            <button class="btn btn-amber" onclick="toast('Checkout is a demo placeholder')">Add to bag</button>
+          </div>
         </div>
       </div>
     </div>
-    <div class="prod">
-      <img src="assets/prod_2.jpg" alt="">
-      <div class="info">
-        <div class="pt">桑蚕丝真丝眼罩</div>
-        <div class="from">📺《契约新娘》第12集 出镜</div>
-        <div class="price">¥39 <s>¥59</s></div>
-        <div class="row">
-          <button class="btn btn-cart" onclick="demoTip('已加入购物车（示例）')">加购物车</button>
-          <button class="btn btn-buy" onclick="demoTip('示例站未接支付 · 真实站此处挂收银台')">立即购买</button>
-        </div>
-      </div>
+    <p class="plans-foot">Free shipping over $35 · 30-day returns · Secure checkout — demo copy, integrate Stripe / PayFast for real orders</p>
+  </div>
+</section>
+
+<section id="membership">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><div class="eyebrow">Membership</div><h2>One tap from the next episode</h2></div>
     </div>
-    <div class="prod">
-      <img src="assets/prod_3.jpg" alt="">
-      <div class="info">
-        <div class="pt">白茶香水礼盒 50ml×2</div>
-        <div class="from">📺《暗夜玫瑰》表白名场面</div>
-        <div class="price">¥129 <s>¥199</s></div>
-        <div class="row">
-          <button class="btn btn-cart" onclick="demoTip('已加入购物车（示例）')">加购物车</button>
-          <button class="btn btn-buy" onclick="demoTip('示例站未接支付 · 真实站此处挂收银台')">立即购买</button>
-        </div>
+    <div class="plans">
+      <div class="plan">
+        <div class="pname">Free</div>
+        <div class="price" data-usd="$0" data-zar="R 0">–</div>
+        <div class="note">Forever, no card needed</div>
+        <ul>
+          <li>Episodes 1–10 of every series</li>
+          <li>Shop-the-look browsing</li>
+          <li>Ad-supported between episodes (demo)</li>
+        </ul>
+        <button class="btn btn-line" onclick="toast('You already watch for free in this demo')">Keep watching</button>
+      </div>
+      <div class="plan feat">
+        <div class="ribbon">Most popular</div>
+        <div class="pname">Gold</div>
+        <div class="price"><span data-usd="$6.99" data-zar="R 129">–</span><small> / month</small></div>
+        <div class="note">Cancel anytime, keeps your progress</div>
+        <ul>
+          <li>Full seasons, day-one access</li>
+          <li>New series every week</li>
+          <li>No ads</li>
+          <li>5% off everything in the shop</li>
+        </ul>
+        <button class="btn btn-amber" onclick="toast('Payment is a demo placeholder — Stripe/PayFast goes here')">Go Gold</button>
+      </div>
+      <div class="plan">
+        <div class="pname">Yearly</div>
+        <div class="price"><span data-usd="$59" data-zar="R 1090">–</span><small> / year</small></div>
+        <div class="note">≈ 2 months free vs monthly</div>
+        <ul>
+          <li>Everything in Gold</li>
+          <li>Early access to finales</li>
+          <li>Shop free-shipping passes ×12</li>
+        </ul>
+        <button class="btn btn-line" onclick="toast('Payment is a demo placeholder — Stripe/PayFast goes here')">Choose Yearly</button>
       </div>
     </div>
   </div>
 </section>
 
+<section id="voices">
+  <div class="wrap">
+    <div class="sec-head"><div><div class="eyebrow">Viewer notes</div><h2>What people say</h2></div></div>
+    <div class="voices">
+      <div class="vc"><div class="stars">★★★★★</div><p>“I finished an entire season on the taxi ride home. The shop-the-look thing is dangerous — I bought the eye mask before episode nine.”</p><div class="who"><b>Thandi M.</b> · Johannesburg (demo review)</div></div>
+      <div class="vc"><div class="stars">★★★★☆</div><p>“Two minutes, one cliffhanger, zero filler. This is how my phone is supposed to work.”</p><div class="who"><b>Jess K.</b> · Austin, TX (demo review)</div></div>
+      <div class="vc"><div class="stars">★★★★★</div><p>“Bookmarked the site months ago and still watch from that tab. My whole lunch break is scheduled around the daily drop.”</p><div class="who"><b>Sipho D.</b> · Cape Town (demo review)</div></div>
+    </div>
+  </div>
+</section>
+
 <footer>
-  <div class="warn">▲ 以上剧集、海报、商品、价格、数据全部为占位示例，仅用于演示网站形态</div>
-  夜光剧场（演示站） · 双击 index.html 即可离线预览 · 视频素材在 assets/ 目录，替换同名文件即可换内容
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <div class="logo" style="margin-bottom:12px">Nightlight<i>.</i></div>
+        <p style="max-width:34ch">Short dramas built for the way you actually scroll. A web-first experience — no app store, no install, just a bookmark.</p>
+      </div>
+      <div><h5>Watch</h5><ul><li><a href="#trending">Browse series</a></li><li><a href="#watch">Now playing</a></li><li><a href="#membership">Membership</a></li></ul></div>
+      <div><h5>Shop</h5><ul><li><a href="#shop">Shop the look</a></li><li><a href="#" onclick="toast('Shipping policy is a demo page');return false;">Shipping</a></li><li><a href="#" onclick="toast('Returns policy is a demo page');return false;">Returns</a></li></ul></div>
+      <div><h5>Company</h5><ul><li><a href="#" onclick="toast('About is a demo page');return false;">About</a></li><li><a href="#" onclick="toast('Support is a demo page');return false;">Support</a></li><li><a href="#" onclick="toast('Privacy policy is a demo page');return false;">Privacy</a></li></ul></div>
+    </div>
+    <div class="f-disclaimer">▲ This is a <b>design demo</b>. Series, posters, clips, products, prices, reviews and policies are fictional placeholders created to preview the site layout. Replace with real, licensed content before launch.</div>
+    <p style="margin-top:22px">© 2026 Nightlight (demo) · Built as a bookmark-first site: works in any mobile browser, no install.</p>
+  </div>
 </footer>
 
-<!-- VIP modal -->
-<div class="mask" id="vipMask" onclick="if(event.target===this)closeVip()">
-  <div class="modal">
-    <h3>开通会员 · 示例收银</h3>
-    <p>解锁全部剧集 + 商城 95 折（演示弹窗，不产生真实交易）</p>
-    <div class="plans">
-      <div class="plan" onclick="pick(this)">月卡<b>¥19.9</b></div>
-      <div class="plan sel" onclick="pick(this)">首月<b>¥9.9</b></div>
-      <div class="plan" onclick="pick(this)">年卡<b>¥129</b></div>
-    </div>
-    <button class="btn btn-gold" onclick="demoTip('示例站未接支付 · 真实站此处跳微信/支付宝收银台')">确认开通</button>
-    <div class="close" onclick="closeVip()">暂不开通</div>
-  </div>
-</div>
-
-<div class="mask" id="tipMask" onclick="closeTip()">
-  <div class="modal" style="width:min(340px,90vw)">
-    <h3 id="tipText" style="font-size:16px;line-height:1.5">提示</h3>
-    <button class="btn btn-ghost" onclick="closeTip()">知道了</button>
-  </div>
-</div>
+<div class="toast" id="toastEl" role="status"></div>
 
 <script>
-  // episode list: 1-10 free, 11-24 locked
-  const el = document.getElementById('epList');
-  for (let i = 1; i <= 24; i++) {
-    const d = document.createElement('div');
-    d.className = 'ep' + (i === 1 ? ' now' : '');
-    d.innerHTML = i + (i > 10 ? '<span class="lock">🔒</span>' : '');
-    d.onclick = () => {
-      if (i > 10) { openVip(); }
-      else {
-        document.querySelectorAll('.ep.now').forEach(x => x.classList.remove('now'));
-        d.classList.add('now');
-        const v = document.getElementById('mainPlayer');
-        v.currentTime = 0; v.play().catch(()=>{});
-      }
-    };
-    el.appendChild(d);
+  // toast
+  let tt;
+  function toast(msg){
+    const el=document.getElementById('toastEl');
+    el.textContent=msg; el.classList.add('show');
+    clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('show'),2600);
   }
-  function jumpPlayer(){ document.getElementById('vip').scrollIntoView({behavior:'smooth'}); }
-  function openVip(){ document.getElementById('vipMask').classList.add('show'); }
-  function closeVip(){ document.getElementById('vipMask').classList.remove('show'); }
-  function pick(x){ document.querySelectorAll('.plan').forEach(p=>p.classList.remove('sel')); x.classList.add('sel'); }
-  function demoTip(msg){ document.getElementById('tipText').textContent = msg; document.getElementById('tipMask').classList.add('show'); }
-  function closeTip(){ document.getElementById('tipMask').classList.remove('show'); }
+  function goWatch(){ document.getElementById('watch').scrollIntoView(); }
+
+  // episode chips 1-10 free, 11-24 member
+  const chips=document.getElementById('chips');
+  for(let i=1;i<=24;i++){
+    const b=document.createElement('button');
+    b.className='chip'+(i>10?' locked':'')+(i===1?' now':'');
+    b.textContent=i;
+    b.onclick=()=>{
+      if(i>10){ toast('Ep. '+i+' is behind the demo paywall — scroll to Membership'); document.getElementById('membership').scrollIntoView(); return; }
+      document.querySelectorAll('.chip.now').forEach(x=>x.classList.remove('now'));
+      b.classList.add('now');
+      const v=document.getElementById('player'); v.currentTime=0; v.play().catch(()=>{});
+      toast('Now playing Episode '+i+' (demo clip)');
+    };
+    chips.appendChild(b);
+  }
+
+  // shop-the-look dot: appears 3.5s-8s into the looping clip
+  const v=document.getElementById('player'), dot=document.getElementById('lookDot'), bub=document.getElementById('lookBubble');
+  v.addEventListener('timeupdate',()=>{
+    const on=v.currentTime>3.5&&v.currentTime<8;
+    dot.classList.toggle('on',on);
+    if(!on) bub.classList.remove('show');
+  });
+  dot.addEventListener('click',e=>{e.stopPropagation();bub.classList.toggle('show')});
+  function hideLook(){bub.classList.remove('show')}
+  document.addEventListener('click',e=>{if(!bub.contains(e.target)&&e.target!==dot)hideLook()});
+
+  // currency USD/ZAR
+  let cur='usd';
+  function fmt(x){return x}
+  function setCur(c){
+    cur=c;
+    document.getElementById('usdBtn').classList.toggle('sel',c==='usd');
+    document.getElementById('zarBtn').classList.toggle('sel',c==='zar');
+    document.querySelectorAll('[data-usd]').forEach(el=>{
+      el.textContent = el.dataset[c==='usd'?'usd':'zar'];
+    });
+  }
+  setCur('usd');
+
+  // wishlist hearts
+  function wish(b){ b.classList.toggle('on'); b.textContent=b.classList.contains('on')?'♥':'♡'; if(b.classList.contains('on')) toast('Saved to wishlist (demo)'); }
 </script>
 </body>
 </html>
