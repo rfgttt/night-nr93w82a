@@ -164,7 +164,7 @@
   footer a:hover{color:var(--ivory)}
   .f-disclaimer{border:1px dashed #4a3a16;color:#c9a86a;border-radius:12px;padding:14px 18px;font-size:12.5px;line-height:1.6}
 
-  .toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,80px);background:var(--surface2);border:1px solid var(--line);color:var(--ivory);font-size:13.5px;padding:12px 22px;border-radius:30px;transition:transform .3s ease;z-index:99;box-shadow:var(--lift);max-width:88vw;text-align:center}
+  .toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,80px);background:var(--surface2);border:1px solid var(--line);color:var(--ivory);font-size:13.5px;padding:12px 22px;border-radius:30px;transition:transform .3s ease;z-index:300;box-shadow:var(--lift);max-width:88vw;text-align:center}
   .toast.show{transform:translate(-50%,0)}
 
   @media (max-width:960px){
@@ -182,16 +182,20 @@
     .rail{grid-template-columns:repeat(2,1fr)}
     .hero h1{font-size:34px}
   }
-  /* ============ VERTICAL FEED (TikTok-style overlay) ============ */
+  /* ============ VERTICAL FEED (default home) ============ */
+  body.mode-feed{overflow:hidden}
+  .site{display:block}
+  body.mode-feed .site{display:none}
   .feed{position:fixed;inset:0;z-index:200;background:#000;display:none;overscroll-behavior:contain}
-  .feed.open{display:block}
+  body.mode-feed .feed{display:block}
+  .feed-toggle{position:absolute;top:14px;right:16px;z-index:210;height:40px;padding:0 18px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.45);backdrop-filter:blur(8px);color:#fff;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:8px}
+  .feed-toggle:hover{background:rgba(255,255,255,.14)}
+  .feed-toggle .bag{font-size:15px}
   .feed-scroll{height:100%;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none}
   .feed-scroll::-webkit-scrollbar{display:none}
   .fpanel{position:relative;height:100%;width:100%;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;display:flex;align-items:center;justify-content:center}
   .fpanel video,.fpanel img.bg{height:100%;width:100%;object-fit:cover;position:absolute;inset:0}
   .fpanel .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,0) 42%,rgba(0,0,0,.25) 100%);pointer-events:none}
-  .feed-x{position:absolute;top:14px;right:16px;z-index:210;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.45);backdrop-filter:blur(8px);color:#fff;font-size:18px;cursor:pointer;line-height:1}
-  .feed-x:hover{background:rgba(255,255,255,.14)}
   .feed-brand{position:absolute;top:16px;left:18px;z-index:210;font-size:15px;font-weight:700;letter-spacing:-.3px;color:#fff}
   .feed-brand i{font-style:normal;color:var(--amber)}
   .feed-brand::before{content:"◐ ";color:var(--amber)}
@@ -244,8 +248,9 @@
   @media (max-width:720px){.btn-feed{bottom:16px;right:16px;padding:10px 16px 10px 12px}.feed-hint{display:none}}
 </style>
 </head>
-<body>
+<body class="mode-feed">
 
+<div class="site" id="site">
 <div class="demo-strip"><b>DEMO SITE</b> · every clip, poster, product and review below is placeholder content for layout preview</div>
 
 <header>
@@ -259,7 +264,7 @@
     </nav>
     <div class="right">
       <a class="signin" href="#" onclick="toast('Sign-in is not wired up in this demo');return false;">Sign in</a>
-      <button class="btn btn-amber" onclick="document.getElementById('watch').scrollIntoView()">Watch free</button>
+      <button class="btn btn-amber" onclick="openFeed()">▶ Back to Feed</button>
     </div>
   </div>
 </header>
@@ -271,7 +276,7 @@
       <h1>Bite-sized dramas you finish <em>on the commute</em>.</h1>
       <p class="lede">60-second episodes, cliffhangers that respect your time — and when you fall for what she's wearing, it's one tap from your door.</p>
       <div class="cta-row">
-        <button class="btn btn-amber" onclick="document.getElementById('trending').scrollIntoView()">Start watching — first 10 free</button>
+        <button class="btn btn-amber" onclick="openFeed()">Start watching — first 10 free</button>
         <span class="notenc">No credit card to browse</span>
       </div>
       <div class="trustline">
@@ -459,10 +464,11 @@
     <p style="margin-top:22px">© 2026 Nightlight (demo) · Built as a bookmark-first site: works in any mobile browser, no install.</p>
   </div>
 </footer>
+</div><!-- /.site -->
 
-<!-- ============ VERTICAL FEED OVERLAY ============ -->
-<div class="feed" id="feed" aria-modal="true" role="dialog" aria-label="Vertical feed">
-  <button class="feed-x" id="feedX" aria-label="Close feed">✕</button>
+<!-- ============ VERTICAL FEED (HOME) ============ -->
+<div class="feed" id="feed" role="main" aria-label="Vertical short drama feed">
+  <button class="feed-toggle" id="feedToggle" onclick="closeFeed()"><span class="bag">🛍</span> Shop &amp; plans</button>
   <div class="feed-brand">Nightlight<i>·Feed</i></div>
   <div class="feed-hint" id="feedHint">swipe / scroll · tap screen to pause</div>
   <div class="feed-scroll" id="feedScroll">
@@ -510,8 +516,6 @@
 
   </div>
 </div>
-
-<button class="btn-feed" id="btnFeed" onclick="openFeed()"><span class="rec">▶</span> Feed mode</button>
 
 <div class="toast" id="toastEl" role="status"></div>
 
@@ -619,7 +623,7 @@
 
   const io=new IntersectionObserver(es=>{
     es.forEach(en=>{
-      if(!en.isIntersecting || feedEl.classList.contains('open')===false) return;
+      if(!en.isIntersecting || !document.body.classList.contains('mode-feed')) return;
       const idx=panels.indexOf(en.target);
       if(idx===active) return;
       active=idx;
@@ -630,32 +634,35 @@
     });
   },{root:feedScroll,threshold:.62});
 
-  function openFeed(){
-    feedEl.classList.add('open');
-    document.documentElement.style.overflow='hidden';
-    panels.forEach((p,i)=>{
-      const t=p.dataset.type;
-      if(t==='ep' && !p.querySelector('video')){
-        const v=document.createElement('video');
-        v.src=p.dataset.video; v.muted=true; v.loop=true; v.playsInline=true; v.preload='metadata';
-        v.setAttribute('aria-label','demo episode clip');
-        p.insertBefore(v,p.firstChild);
-        buildChrome(p,i);
-        v.addEventListener('click',e=>{e.stopPropagation(); v.paused?v.play():v.pause();});
-      }
-      io.observe(p);
-    });
-    feedScroll.scrollTo({top:0}); active=-1;
-    setTimeout(()=>{const v=panels[0].querySelector('video'); if(v)v.play().catch(()=>{});},120);
+  // Build feed videos once — the feed IS the home page
+  panels.forEach((p,i)=>{
+    if(p.dataset.type==='ep' && !p.querySelector('video')){
+      const v=document.createElement('video');
+      v.src=p.dataset.video; v.muted=true; v.loop=true; v.playsInline=true; v.preload='metadata';
+      v.setAttribute('aria-label','demo episode clip');
+      p.insertBefore(v,p.firstChild);
+      buildChrome(p,i);
+      v.addEventListener('click',e=>{e.stopPropagation(); v.paused?v.play():v.pause();});
+    }
+    io.observe(p);
+  });
+
+  function openFeed(scrollTop){
+    document.body.classList.add('mode-feed');
+    if(scrollTop!==false) feedScroll.scrollTo({top:0});
+    active=-1;
+    setTimeout(()=>{
+      const vp=(scrollTop===false)?null:panels[0].querySelector('video');
+      if(vp){vp.play().catch(()=>{});}
+      panels.forEach((p,i)=>{const v=p.querySelector('video'); if(v&&i!==0){v.pause();v.currentTime=0;}});
+      active = scrollTop===false?active:0;
+    },80);
   }
   function closeFeed(){
-    feedEl.classList.remove('open');
-    document.documentElement.style.overflow='';
-    panels.forEach(p=>{const v=p.querySelector('video'); if(v){v.pause();v.currentTime=0;}});
+    document.body.classList.remove('mode-feed');
+    panels.forEach(p=>{const v=p.querySelector('video'); if(v)v.pause();});
     active=-1;
   }
-  document.getElementById('feedX').addEventListener('click',closeFeed);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&feedEl.classList.contains('open'))closeFeed();});
   // currency switch also refreshes feed chips if present
   const _setCur=setCur;
   setCur=function(c){_setCur(c); document.querySelectorAll('.fprod .js-price').forEach(el2=>{const p=el2.closest('.fpanel');const d=feedData[panels.indexOf(p)];if(d&&d.shop)el2.textContent=priceTxt(d.shop);});};
